@@ -6,15 +6,14 @@ d3.json(url).then(function(response){
     let features = response.features;
     let dataMarkers = [];
 
-    // Creating function for color selection
-    function markerColor(depth){
-        return depth < 10 ? color = "#333ED4":
-               depth <= 30 ? color = "#2FA236":
-               depth <= 50 ? color = "#A0D636":
-               depth <= 70 ? color = "#EEDE04":
-               depth <= 90 ? color = "#F76915":
-                                     "#FD0100";
-    };
+    function markerColor(color){
+        if (color < 10) return "#333ED4";
+        else if (color < 30) return "#2FA236";
+        else if (color < 50) return "#A0D636";
+        else if (color < 70) return "#EEDE04";
+        else if (color < 90) return "#F76915";
+        else return "#FD0100";
+    }
 
     // Setting datapoints 
     for (let i = 0; i < features.length; i++){
@@ -50,7 +49,7 @@ d3.json(url).then(function(response){
         "Topographical": topo
     };
     
-    //Creating the map object
+    // Creating the map object
     let myMap = L.map("map", {
         center: [38.7128, -94.0059],
         zoom: 4,
@@ -60,8 +59,8 @@ d3.json(url).then(function(response){
         collapsed: false,
     }).addTo(myMap);
 
-    // Creating the legend.
-    let legend = L.control({ position: "bottomright" });
+    // Creating the legend
+    let legend = L.control({position: "bottomright"});
     legend.onAdd = function() {
         let div = L.DomUtil.create("div", "info legend");
         let group = ["<10", "10-30", "30-50", "50-70", "70-90", "90+"];
@@ -74,10 +73,7 @@ d3.json(url).then(function(response){
             labels.push(
                 '<li style=\"background-color:' + markerColor(category[i] + 1) + '\"></i>' + (group[i] ? group[i] : '+'));
         }
-               
-        //REFERENCED https://www.w3schools.com/html/html_lists_unordered.asp FOR LIST WITHOUT BULLETS
         div.innerHTML = '<ul style="list-style-type: none;">' + labels.join('<br>') + "</ul>";
-        //div.innerHTML = labels.join('<br>');
         return div;
     };
     legend.addTo(myMap);
